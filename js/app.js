@@ -62,21 +62,23 @@ btnpost.addEventListener("click",()=>{
 const btncoments=document.getElementById("btncoments");
 btncoments.addEventListener("click",()=>{
     ////////////////////////
+    //  json.forEach("uno"=>{(decidir como se llamará")
     //https://jsonplaceholder.typicode.com/comments?postId
     let idpost=document.getElementById("userpost").value;
     fetch('https://jsonplaceholder.typicode.com/comments?postId='+ idpost)
     .then(response=> response.json())
-    let entra=""
-    json.forEach(post=>{
-        entra +=`
-        <h3>${post.name}</h3>
-        <h3>${post.email}</h3>
-        <p>${post.body}</p>
-        <div id="post${post.id}"></div>
-        `;
+    .then(json=>{
+        let result=""
+        json.forEach(comentario=>{
+            result +=`
+            <h3>${comentario.name}</h3>
+            <h3>${comentario.email}</h3>
+            <p>${comentario.body}</p>
+            <div id="post${comentario.id}"></div>
+            `;
+        })
     })
+   
     let detalles=document.getElementById('usercoments');
-    detalles.innerHTML=entra;
-
-  //  blog.innerHTML='<h2>Estoy aquí</h2>'
+    detalles.innerHTML=result;
 })
