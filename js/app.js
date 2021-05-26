@@ -62,15 +62,15 @@ btnpost.addEventListener("click",()=>{
 const btncoments=document.getElementById("btncoments");
 btncoments.addEventListener("click",()=>{
     ////////////////////////
-    //  json.forEach("uno"=>{(decidir como se llamará")
     //https://jsonplaceholder.typicode.com/comments?postId
+    //https://jsonplaceholder.typicode.com/posts/1/comments
     let idpost=document.getElementById("userpost").value;
-    fetch('https://jsonplaceholder.typicode.com/comments?postId='+ idpost)
+    fetch('https://jsonplaceholder.typicode.com/comments?postId='+idpost)
     .then(response=> response.json())
     .then(json=>{
-        let result=""
+        let entra=""
         json.forEach(comentario=>{
-            result +=`
+            entra +=`
             <h3>${comentario.name}</h3>
             <h3>${comentario.email}</h3>
             <p>${comentario.body}</p>
@@ -78,7 +78,20 @@ btncoments.addEventListener("click",()=>{
             `;
         })
     })
+    function fetchcoment(id){
+        fetch(`https://jsonplaceholder.typicode.com/comments/${id}`)
+        .then(res=>res.json())
+        .then(data=> console.log(data))
+    }
+    fetchcoment(1);
+
+    function fetchcoments(number){
+    for(let i=1;i<=number ;i++){
+        fetchcoment(i);
+    }
+    }fetchcoments(10);
+
    
     let detalles=document.getElementById('usercoments');
-    detalles.innerHTML=result;
+    detalles.innerHTML=entra;
 })
