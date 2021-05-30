@@ -4,6 +4,7 @@ btnuser.addEventListener("click",()=>{
     fetch('https://jsonplaceholder.typicode.com/users')
   .then(response => response.json())
   .then(json => {
+      //for(let i=1; i<json.length;i++)
       let opss="";
       estructura.clear();
       json.forEach(usr => {
@@ -11,11 +12,12 @@ btnuser.addEventListener("click",()=>{
           opss+='<option value="'+ usr.id+'">'+usr.username +'</option>'
       });
       document.getElementById('mnuusers').innerHTML=opss  //Trae los usuarios
+      document.getElementById('btnpost').classList.remove('invisible');
   })
 })
 const mnuusers=document.getElementById("mnuusers");
 mnuusers.addEventListener("change",()=>{
-   let iduser=document.getElementById("mnuusers").value;
+    let iduser=document.getElementById("mnuusers").value;
     iduser=parseInt(iduser);
     let user=estructura.get(iduser);
     let res=  `<h3>nombre:${user.name}</h3>
@@ -26,72 +28,40 @@ mnuusers.addEventListener("change",()=>{
     let detalles=document.getElementById('userdetails');
     detalles.innerHTML=res;
     detalles.innerHTML+='<input type="text" value="'+ user.username +'">' 
-    /*
-    fetch('https://jsonplaceholder.typicode.com/users/'+ iduser)
-    .then(response => response.json())
-    .then(json=>{
-        let res=  `<h3>nombre:${json.name}</h3>
-        <h4>compañia:${json.company.name}</h4>
-        <p>username:${json.username}</p>
-        <p>correo:${json.email} <br>
-        telefono:${json.phone}</p>`;
-        let detalles=document.getElementById('userdetails');
-        detalles.innerHTML=res;
-        detalles.innerHTML+='<input type="text" value="'+ json.username +'">' 
-    })  //Trae la información de uno solo
-    */
+
 })
 const btnpost=document.getElementById("btnpost")
 btnpost.addEventListener("click",()=>{
+    //
     let iduser=document.getElementById("mnuusers").value;
     fetch('http://jsonplaceholder.typicode.com/posts/?userId='+ iduser)
     .then(response=> response.json())
     .then(json=>{
-        let res=""
+        let res="";
         json.forEach(blog=>{
-            res+= `
-                <h3>${blog.title}</h3>
-                <p>${blog.body}</p>
+            res+= `<div class="card">
+                <h3 class= "card-title"><button type='button' class="btn btn-success  btn-sm" onClick="VerComentarios(${blog.id})"> + </button>${blog.title} </h3>
+                <p class="card-text">${blog.body}</p>
                 <div id="blog${blog.id}"> </div>
+                </div>
             `;
         })
         let detalles=document.getElementById('userpost');
         detalles.innerHTML=res;
+       
+        console.log(1);
     })
 })
-const btncoments=document.getElementById("btncoments");
-btncoments.addEventListener("click",()=>{
-    ////////////////////////
-    //https://jsonplaceholder.typicode.com/comments?postId
-    //https://jsonplaceholder.typicode.com/posts/1/comments
-    let idpost=document.getElementById("userpost").value;
-    fetch('https://jsonplaceholder.typicode.com/comments?postId='+idpost)
-    .then(response=> response.json())
-    .then(json=>{
-        let entra=""
-        json.forEach(comentario=>{
-            entra +=`
-            <h3>${comentario.name}</h3>
-            <h3>${comentario.email}</h3>
-            <p>${comentario.body}</p>
-            <div id="post${comentario.id}"></div>
-            `;
+function VerComentarios(blog){
+    console.log("Mostrare los comentarios del blog"+ blog);
+    fetch('http://jsonplaceholder.typicode.com/posts/'+ blog +'/comments')
+    .then(response=>response.json())
+    .then (json=>{
+        let r="";
+        json.forEach(cmt=>{
+            r+='<div class="card"><p class="card-text">'+ cmt.body + '</p></div>'
         })
+        document.getElementById('blog'+blog).innerHTML=r;
     })
-    function fetchcoment(id){
-        fetch(`https://jsonplaceholder.typicode.com/comments/${id}`)
-        .then(res=>res.json())
-        .then(data=> console.log(data))
-    }
-    fetchcoment(1);
+}
 
-    function fetchcoments(number){
-    for(let i=1;i<=number ;i++){
-        fetchcoment(i);
-    }
-    }fetchcoments(10);
-
-   
-    let detalles=document.getElementById('usercoments');
-    detalles.innerHTML=entra;
-})
